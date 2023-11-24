@@ -1,0 +1,47 @@
+.filter {
+  &__title {
+    text-transform: uppercase;
+  }
+
+  &__body {
+    background-color: #dce3ea;
+  }
+
+  &__search {
+    margin-bottom: 10px;
+
+    &-form {
+      position: relative;
+      display: flex;
+    }
+
+    &-clear {
+      background: none;
+      border: none;
+      padding: 0;
+      outline: inherit;
+      height: 100%;
+      width: 36px;
+      position: absolute;
+      right: 0;
+    }
+  }
+
+  &__list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    &-item {
+      display: block;
+    }
+  }
+
+  &__help {
+    color: var(--bs-gray-600);
+    line-height: 1.2;
+    font-size: 14px;
+    display: inline-block;
+    margin-top: 0.25rem;
+  }
+}
