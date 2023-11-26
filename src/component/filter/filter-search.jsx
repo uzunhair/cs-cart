@@ -21,7 +21,7 @@ const FilterSearch = ({ helpShow }) => {
 };
 
 FilterSearch.propTypes = {
-  helpShow: PropTypes.bool.isRequired,
+  helpShow: PropTypes.bool,
 };
 FilterSearch.defaultProps = {
   helpShow: false

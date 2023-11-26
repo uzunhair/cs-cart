@@ -15,7 +15,7 @@ const FormCheck = ({ type, label, id }) => {
 FormCheck.propTypes = {
   type: PropTypes.oneOf(['radio', 'checkbox']),
   label: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 FormCheck.defaultProps = {

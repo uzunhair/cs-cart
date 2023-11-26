@@ -1,0 +1,44 @@
+.slider {
+  &__groups {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    color: var(--bs-gray-600);
+  }
+
+  &__group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+    flex: 1 1 auto;
+    > .form__control {
+      position: relative;
+      flex: 1 1 auto;
+      width: 1%;
+      min-width: 0;
+    }
+  }
+
+  &__text {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+
+    &_prefix {
+      margin-right: .375em;
+    }
+
+    &_suffix {
+      margin-left: .375em;
+    }
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    margin: 0 .5em;
+  }
+}
