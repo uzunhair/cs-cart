@@ -4,8 +4,12 @@ import PropTypes from 'prop-types';
 import "./slider.styles.scss";
 
 const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(0);
+  const [valueRange, setValueRange] = useState({ min: minValue, max: maxValue });
+  const [minValueRange, setMinValueRange] = useState(minValue);
+  const [maxValueRange, setMaxValueRange] = useState(maxValue);
+
+  const [min, setMin] = useState(minValue);
+  const [max, setMax] = useState(maxValue);
 
   const prefixRef = useRef(null);
   const suffixRef = useRef(null);
@@ -19,12 +23,27 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
     const valueAsNumber = event.target.valueAsNumber;
     const value = Number.isInteger(valueAsNumber) ? valueAsNumber : '';
 
+    console.log('---', event.target);
+
     if (name === 'min') {
       setMin(value);
+
+      if(value >= minValue && value <= maxValue) {
+        const newMinVal = Math.min(value, maxValueRange - step);
+        setMin(value);
+        setMinValueRange(newMinVal);
+        setValueRange(prev => ({...prev, min: value}));
+      }
     }
 
     if (name === 'max') {
       setMax(value);
+      if(value >= minValue && value <= maxValue) {
+        const newMaxVal = Math.max(value, minValueRange + step);
+        setMax(value);
+        setMaxValueRange(newMaxVal);
+        setValueRange(prev => ({...prev, max: newMaxVal}));
+      }
     }
   });
 
@@ -47,45 +66,46 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
     const validNumber = numberRangeMinAndMax(value, minValue, maxValue);
 
     if (name === 'min') {
-      setMin(validNumber);
-      setMax((prev) => validNumber > prev ? validNumber : prev);
+      const newMinVal = Math.min(validNumber, maxValue - 1);
+      const newMaxVal = Math.min(validNumber + 1, maxValue);
+      setMin(newMinVal);
+      if(newMaxVal > maxValueRange) {
+        setMax(newMaxVal);
+      }
     }
 
     if (name === 'max') {
-      setMax(validNumber);
-      setMin((prev) => validNumber < prev ? validNumber : prev);
+      const newMinVal = Math.max(validNumber - 1, minValue);
+      const newMaxVal = Math.max(validNumber, minValue + 1);
+      setMax(newMaxVal);
+      if(newMinVal < minValueRange) {
+        setMin(newMinVal);
+      }
     }
   });
-  
-  const [valueC, setValueC] = useState({ min: minValue, max: maxValue });
-  const [minValueC, setMinValueC] = React.useState(valueC ? valueC.min : min);
-  const [maxValueC, setMaxValueC] = React.useState(valueC ? valueC.max : max);
+
+  const handleMinChange = ((event) => {
+    event.preventDefault();
+    const newMinVal = Math.min(+event.target.value, maxValueRange - step);
+    setMin(newMinVal);
+    setMinValueRange(newMinVal);
+    setValueRange({ min: newMinVal, max: maxValueRange });
+  });
+
+  const handleMaxChange = ((event) => {
+    event.preventDefault();
+    const newMaxVal = Math.max(+event.target.value, minValueRange + step);
+    setMax(newMaxVal);
+    setMaxValueRange(newMaxVal);
+    setValueRange({ min: minValueRange, max: newMaxVal });
+  });
 
   React.useEffect(() => {
-    if (valueC) {
-      setMinValueC(valueC.min);
-      setMaxValueC(valueC.max);
+    if (valueRange) {
+      setMinValueRange(valueRange.min);
+      setMaxValueRange(valueRange.max);
     }
-  }, [valueC]);
-
-  const handleMinChange = e => {
-    e.preventDefault();
-    const newMinVal = Math.min(+e.target.value, maxValueC - step);
-    if (!valueC) setMinValueC(newMinVal);
-    setValueC({ min: newMinVal, max: maxValueC });
-  };
-
-  const handleMaxChange = e => {
-    e.preventDefault();
-    const newMaxVal = Math.max(+e.target.value, minValueC + step);
-    if (!valueC) setMaxValueC(newMaxVal);
-    setValueC({ min: minValueC, max: newMaxVal });
-  };
-
-  useEffect(() => {
-    setMin(minValue);
-    setMax(maxValue);
-  }, [minValue, maxValue]);
+  }, [valueRange]);
 
   useEffect(() => {
     setPrefixWidth(prev => ({
@@ -93,6 +113,11 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
       paddingRight: suffix ? `${suffixRef?.current.offsetWidth}px` : prev.paddingRight,
     }));
   }, []);
+
+  const minPos = (minValueRange - minValue) / ((maxValue - minValue) * 0.01);
+  const maxPos = (maxValue - maxValueRange) / (maxValue * 0.01);
+
+  console.log('---', minPos);
 
   return (
     <div>
@@ -139,12 +164,15 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
       </div>
       <div className="slider__range">
         <div className="slider__range-group">
+          <div className="slider__rail">
+            <div className="slider__rail-inner" style={{left: `${minPos}%`, right: `${maxPos}%`}} />
+          </div>
           <input
             type="range"
             className="form__range form__range_min"
             min={minValue}
             max={maxValue}
-            value={valueC.min}
+            value={valueRange.min}
             step={step}
             onChange={handleMinChange}
           />
@@ -153,11 +181,12 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
             className="form__range form__range_max"
             min={minValue}
             max={maxValue}
-            value={valueC.max}
+            value={valueRange.max}
             step={step}
             onChange={handleMaxChange}
           />
         </div>
+
         <div className="slider__range-text">
           <div className="slider__range-min">{prefix}{minValue}</div>
           <div className="slider__range-max">{prefix}{maxValue}</div>
