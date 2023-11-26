@@ -209,6 +209,10 @@
       &::-webkit-slider-thumb {
         pointer-events: auto;
       }
+
+      &::-moz-range-thumb {
+        pointer-events: auto;
+      }
     }
   }
 }

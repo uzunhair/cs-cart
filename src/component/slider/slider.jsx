@@ -84,21 +84,21 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
     }
   });
 
-  const handleMinChange = ((event) => {
+  const handleInputChange = (event) => {
     event.preventDefault();
-    const newMinVal = Math.min(+event.target.value, maxValueRange - step);
-    setMin(newMinVal);
-    setMinValueRange(newMinVal);
-    setValueRange({ min: newMinVal, max: maxValueRange });
-  });
-
-  const handleMaxChange = ((event) => {
-    event.preventDefault();
-    const newMaxVal = Math.max(+event.target.value, minValueRange + step);
-    setMax(newMaxVal);
-    setMaxValueRange(newMaxVal);
-    setValueRange({ min: minValueRange, max: newMaxVal });
-  });
+    const { target: { value }} = event;
+    const newMinVal = Math.min(value, maxValueRange - step);
+    const newMaxVal = Math.max(value, minValueRange + step);
+    if (event.target.id === 'range-min') {
+      setMin(newMinVal);
+      setMinValueRange(newMinVal);
+      setValueRange({ min: newMinVal, max: maxValueRange });
+    } else {
+      setMax(newMaxVal);
+      setMaxValueRange(newMaxVal);
+      setValueRange({ min: minValueRange, max: newMaxVal });
+    }
+  };
 
   React.useEffect(() => {
     if (valueRange) {
@@ -116,8 +116,6 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
 
   const minPos = (minValueRange - minValue) / ((maxValue - minValue) * 0.01);
   const maxPos = (maxValue - maxValueRange) / (maxValue * 0.01);
-
-  console.log('---', minPos);
 
   return (
     <div>
@@ -174,7 +172,8 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
             max={maxValue}
             value={valueRange.min}
             step={step}
-            onChange={handleMinChange}
+            id="range-min"
+            onChange={handleInputChange}
           />
           <input
             type="range"
@@ -183,7 +182,7 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
             max={maxValue}
             value={valueRange.max}
             step={step}
-            onChange={handleMaxChange}
+            onChange={handleInputChange}
           />
         </div>
 
