@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import FormCheck from "src/component/form/form-check";
 import FilterSearch from "src/component/filter/filter-search";
 
-const FilterList = ({list}) => {
+const FilterList = ({list, getFiltersForServer}) => {
   const [data, setData] = useState([]);
 
   const search = (value) => {
@@ -25,6 +25,11 @@ const FilterList = ({list}) => {
   useEffect(() => {
     setData(list.map((item) => ({...item, checked: false, show: true})));
   }, [setData]);
+
+  useEffect(() => {
+    const active = data.filter(({checked}) => checked);
+    getFiltersForServer()(active);
+  }, [data]);
 
   return (
     <>

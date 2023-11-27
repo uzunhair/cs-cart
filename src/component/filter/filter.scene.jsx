@@ -16,6 +16,19 @@ const filterTypes = {
 const FilterScene = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [filterJSON, setFilterJSON] = useState([]);
+  const [kitFilters, setKitFilters] = useState([]);
+
+  const getFiltersForServer = (parent, type) => (child) => {
+    const obj = {
+      "unique_id": parent,
+      "type": type,
+      "list_variants": child
+    }
+
+    setKitFilters(prevState => ({...prevState, [`unique_id_${parent}`]: obj, }));
+  };
+
+  console.log('kitFilters', kitFilters);
 
   useEffect(() => {
     let ignore = false;
@@ -51,7 +64,7 @@ const FilterScene = () => {
             return (
               <Collapse key={unique_id} showDefault={true} title={display_name}>
                 {type === filterTypes.list && list_variants.length > 0 && (
-                  <FilterList list={list_variants} />
+                  <FilterList list={list_variants} getFiltersForServer={() => getFiltersForServer(unique_id, type)} />
                 )}
 
                 {type === filterTypes.slider && (
@@ -60,6 +73,7 @@ const FilterScene = () => {
                     maxValue={slider_max_value}
                     prefix={slider_value_prefix}
                     suffix={slider_value_suffix}
+                    getFiltersForServer={() => getFiltersForServer(unique_id, type)}
                   />
                 )}
               </Collapse>

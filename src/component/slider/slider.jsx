@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import "./slider.styles.scss";
 
-const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
+const Slider = ({step, minValue, maxValue, prefix, suffix, getFiltersForServer}) => {
   const [valueRange, setValueRange] = useState({ min: minValue, max: maxValue });
   const [minValueRange, setMinValueRange] = useState(minValue);
   const [maxValueRange, setMaxValueRange] = useState(maxValue);
@@ -113,6 +113,13 @@ const Slider = ({step, minValue, maxValue, prefix, suffix}) => {
       paddingRight: suffix ? `${suffixRef?.current.offsetWidth}px` : prev.paddingRight,
     }));
   }, []);
+
+  useEffect(() => {
+    getFiltersForServer()({
+      "slider_min_value": min,
+      "slider_max_value": max,
+    });
+  }, [minValueRange, maxValueRange, min, max]);
 
   const minPos = (minValueRange - minValue) / ((maxValue - minValue) * 0.01);
   const maxPos = (maxValue - maxValueRange) / (maxValue * 0.01);
