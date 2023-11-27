@@ -35,6 +35,10 @@
     &-item {
       display: block;
     }
+
+    &_false {
+      display: none;
+    }
   }
 
   &__help {

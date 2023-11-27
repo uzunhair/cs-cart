@@ -3,10 +3,21 @@ import PropTypes from 'prop-types';
 
 import 'src/component/form/form.scss';
 
-const FormCheck = ({ type, label, id }) => {
+const FormCheck = ({type, label, id, isChecked, onClick}) => {
+  const handleChange = (id) => {
+    onClick(id);
+  };
+
   return (
     <div className="form__check">
-      <input type={type} className="form__check-input" id={id} name={id} />
+      <input
+        type={type}
+        className="form__check-input"
+        id={id}
+        name={id}
+        checked={isChecked}
+        onChange={() => handleChange(id)}
+      />
       <label htmlFor={id} className="form__check-label">{label}</label>
     </div>
   );

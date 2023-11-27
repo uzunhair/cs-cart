@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 
 import FilterComponent from './filter.component';
 import Collapse from "src/component/collapse/collapse.component";
-import FilterSearch from "src/component/filter/filter-search";
 import FilterList from "src/component/filter/filter-list";
 import Slider from "src/component/slider/slider";
 import {getJsonWithDelay} from "src/api/api";
@@ -12,7 +11,7 @@ const apiDelay = 100;
 const filterTypes = {
   list: 'list',
   slider: 'slider',
-}
+};
 
 const FilterScene = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -52,10 +51,7 @@ const FilterScene = () => {
             return (
               <Collapse key={unique_id} showDefault={true} title={display_name}>
                 {type === filterTypes.list && list_variants.length > 0 && (
-                  <>
-                    <FilterSearch/>
-                    <FilterList list={list_variants}/>
-                  </>
+                  <FilterList list={list_variants} />
                 )}
 
                 {type === filterTypes.slider && (
