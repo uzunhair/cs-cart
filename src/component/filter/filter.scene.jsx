@@ -7,7 +7,7 @@ import Slider from "src/component/slider/slider";
 import {getJsonWithDelay} from "src/api/api";
 
 const apiUrl = './filters.json';
-const apiDelay = 100;
+const apiDelay = 1000;
 const filterTypes = {
   list: 'list',
   slider: 'slider',

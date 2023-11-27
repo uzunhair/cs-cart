@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import XIcon from 'src/component/icons/x';
 
-const FilterSearch = ({ helpShow, search, }) => {
+const FilterSearch = ({ helpShow, search, clear }) => {
   const [value, setValue] = useState('');
   const handleChange = (event) => {
     setValue(event.target.value)
@@ -16,6 +16,10 @@ const FilterSearch = ({ helpShow, search, }) => {
   useEffect(() => {
     search(value);
   }, [value])
+
+  useEffect(() => {
+    onClick();
+  }, [clear])
 
   return (
     <div className="filter__search">

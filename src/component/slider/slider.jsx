@@ -18,12 +18,12 @@ const Slider = ({step, minValue, maxValue, prefix, suffix, getFiltersForServer})
     paddingRight: '0.5rem',
   });
 
+  const [clear, setClear] = useState(false);
+
   const handleChange = ((event) => {
     const name = event.target.name;
     const valueAsNumber = event.target.valueAsNumber;
     const value = Number.isInteger(valueAsNumber) ? valueAsNumber : '';
-
-    console.log('---', event.target);
 
     if (name === 'min') {
       setMin(value);
@@ -100,7 +100,20 @@ const Slider = ({step, minValue, maxValue, prefix, suffix, getFiltersForServer})
     }
   };
 
-  React.useEffect(() => {
+  const handleClear = () => {
+    setClear(prev => !prev);
+  }
+
+  useEffect(() => {
+    setValueRange({ min: minValue, max: maxValue });
+    setMinValueRange(minValue);
+    setMaxValueRange(maxValue);
+
+    setMin(minValue);
+    setMax(maxValue);
+  }, [clear, minValue, maxValue]);
+
+  useEffect(() => {
     if (valueRange) {
       setMinValueRange(valueRange.min);
       setMaxValueRange(valueRange.max);
@@ -112,7 +125,7 @@ const Slider = ({step, minValue, maxValue, prefix, suffix, getFiltersForServer})
       paddingLeft: prefix ? `${prefixRef?.current.offsetWidth}px` : prev.paddingLeft,
       paddingRight: suffix ? `${suffixRef?.current.offsetWidth}px` : prev.paddingRight,
     }));
-  }, []);
+  }, [prefix, suffix]);
 
   useEffect(() => {
     getFiltersForServer()({
@@ -126,6 +139,9 @@ const Slider = ({step, minValue, maxValue, prefix, suffix, getFiltersForServer})
 
   return (
     <div>
+      {(minPos > 0 || maxPos > 0) && (
+        <button type="button" onClick={handleClear} className="filter__clear-button">Очистить</button>
+      )}
       <div className="slider__groups">
         <div className="slider__group">
           {prefix && (

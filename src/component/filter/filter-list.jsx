@@ -6,6 +6,8 @@ import FilterSearch from "src/component/filter/filter-search";
 
 const FilterList = ({list, getFiltersForServer}) => {
   const [data, setData] = useState([]);
+  const [clear, setClear] = useState(false);
+  const [clearShow, setClearShow] = useState(false);
 
   const search = (value) => {
     const newData = data.map((item) => {
@@ -22,18 +24,23 @@ const FilterList = ({list, getFiltersForServer}) => {
     setData(checkedData);
   };
 
+  const handleClear = () => {
+    setClear(prev => !prev);
+  }
+
   useEffect(() => {
     setData(list.map((item) => ({...item, checked: false, show: true})));
-  }, [setData]);
+  }, [setData, clear, list]);
 
   useEffect(() => {
     const active = data.filter(({checked}) => checked);
     getFiltersForServer()(active);
+    setClearShow(!!active.length);
   }, [data]);
 
   return (
     <>
-      <FilterSearch search={search} helpShow={!data.length}/>
+      <FilterSearch search={search} helpShow={!data.length} clear={clear}/>
       <ul className="filter__list">
         {data.map(({unique_id, display_name, show, checked}) => (
           <li key={unique_id} className={`filter__list-item filter__list_${show}`}>
@@ -41,6 +48,9 @@ const FilterList = ({list, getFiltersForServer}) => {
           </li>
         ))}
       </ul>
+      {clearShow && (
+        <button type="button" onClick={handleClear} className="filter__clear-button">Очистить</button>
+      )}
     </>
   );
 };
